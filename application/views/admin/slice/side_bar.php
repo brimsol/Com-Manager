@@ -1,33 +1,3 @@
-<?php
-$dashboard = '';
-$modules = '';
-$modules_in = '';
-$modules_li = '';
-
-$video_gallery = '';
-$video_gallery_in = '';
-$video_gallery_li = '';
-
-
-
-$usermanage_in = '';
-$usermanage_li = '';
-
-$menu = isset($menu) ? $menu : '';
-switch ($menu) {
-
-    case 'video_gallery':
-        $modules = 'sdb_h_active';
-        $modules_in = 'in';
-        $video_gallery_li = 'class="active"';
-        break;
-    default:
-        $dashboard = 'sdb_h_active';
-        $dashboard_in = 'in';
-        $dashboard_li = 'class="active"';
-        break;
-}
-?>
 </div>
 </div>
 <a href="javascript:void(0)" class="sidebar_switch on_switch ttip_r" title="Hide Sidebar">Sidebar switch</a>
@@ -44,12 +14,12 @@ switch ($menu) {
                     <div id="side_accordion" class="accordion">
 
                         <div class="accordion-group">
-                            <div class="accordion-heading">
+                            <div class="accordion-heading <?php if(isset($menu)&&($menu=='Districts')){echo " sdb_h_active";}?>">
                                 <a href="#collapseOne" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
                                     <i class="icon-th"></i> Districts
                                 </a>
                             </div>
-                            <div class="accordion-body collapse" id="collapseOne">
+                            <div class="accordion-body collapse <?php if(isset($menu)&&($menu=='Districts')){echo " in";}?>" id="collapseOne">
                                 <div class="accordion-inner">
                                     <ul class="nav nav-list">
                                         <li><a href="<?php echo site_url('cm/districts');?>">Districts</a></li>
@@ -60,28 +30,29 @@ switch ($menu) {
                             </div>
                         </div>
                         <div class="accordion-group">
-                            <div class="accordion-heading">
+                            <div class="accordion-heading <?php if(isset($menu)&&($menu=='Associations')){echo " sdb_h_active";}?>">
                                 <a href="#collapseTwo" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
                                     <i class="icon-th"></i> Associations
                                 </a>
                             </div>
-                            <div class="accordion-body collapse" id="collapseTwo">
+                            <div class="accordion-body collapse <?php if(isset($menu)&&($menu=='Associations')){echo " in";}?>" id="collapseTwo">
                                 <div class="accordion-inner">
                                     <ul class="nav nav-list">
-                                        <li><a href="<?php echo site_url('cm/associations');?>">Associations</a></li>
-                                        <li><a href="<?php echo site_url('cm/associations/add');?>">Add Association</a></li>
-                                      
+                                        <li><a href="<?php echo site_url('cm/associations');?>" > Associations</a></li>
+                                        <li><a href="<?php echo site_url('cm/associations/add');?>"> Add Association</a></li>
+                                        <li><a href="<?php echo site_url('cm/sub_associations');?>"> Sub Associations</a></li>
+                                        <li><a href="<?php echo site_url('cm/sub_associations/add');?>"> Add Sub Association</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 						<div class="accordion-group">
-                            <div class="accordion-heading">
+                            <div class="accordion-heading <?php if(isset($menu)&&($menu=='Competitions')){echo " sdb_h_active";}?>">
                                 <a href="#collapseThree" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
                                     <i class="icon-th"></i> Competitions 
                                 </a>
                             </div>
-                            <div class="accordion-body collapse" id="collapseThree">
+                            <div class="accordion-body collapse <?php if(isset($menu)&&($menu=='Competitions')){echo " in";}?>" id="collapseThree">
                                 <div class="accordion-inner">
                                     <ul class="nav nav-list">
                                         <li><a href="<?php echo site_url('cm/items');?>">Competitions</a></li>
@@ -92,12 +63,12 @@ switch ($menu) {
                             </div>
                         </div>
 						<div class="accordion-group">
-                            <div class="accordion-heading">
+                            <div class="accordion-heading <?php if(isset($menu)&&($menu=='Participants')){echo " sdb_h_active";}?>">
                                 <a href="#collapseFour" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
                                     <i class="icon-th"></i> Participants 
                                 </a>
                             </div>
-                            <div class="accordion-body collapse" id="collapseFour">
+                            <div class="accordion-body collapse <?php if(isset($menu)&&($menu=='Participants')){echo " in";}?>" id="collapseFour">
                                 <div class="accordion-inner">
                                     <ul class="nav nav-list">
                                         <li><a href="<?php echo site_url('cm/participants');?>">Participants</a></li>
