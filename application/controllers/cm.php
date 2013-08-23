@@ -29,10 +29,16 @@ class Cm extends CI_Controller {
 		//$this -> grocery_crud -> set_table('items');
 		//$output = $this -> grocery_crud -> render();
 		$crud = new grocery_CRUD();
-		$crud -> set_table('items') -> set_subject('Item') -> columns('item_name', 'fellowship_id', 'item_description') -> display_as('item_name', 'Item') -> display_as('item_description', 'Item Description') -> display_as('fellowship_id', 'Association');
-		$crud -> fields('item_name', 'item_description', 'fellowship_id');
+		$crud -> set_table('items') -> set_subject('Item') 
+		-> columns('item_name', 'fellowship_id', 'sub_fellowship_id','item_description') 
+		-> display_as('item_name', 'Item') 
+		-> display_as('item_description', 'Item Description') 
+		-> display_as('fellowship_id', 'Association')
+		-> display_as('sub_fellowship_id', 'Sub Association');
+		$crud -> fields('item_name', 'item_description', 'fellowship_id', 'sub_fellowship_id');
 		$crud -> required_fields('item_name', 'fellowship_id');
 		$crud -> set_relation('fellowship_id', 'fellowships', 'fellowship_name');
+		$crud -> set_relation('sub_fellowship_id', 'sub_fellowships', 'sub_fellowship_name');
 		$output = $crud -> render();
 		$output->menu = 'Competitions';
 		$this -> _layout_output($output);
