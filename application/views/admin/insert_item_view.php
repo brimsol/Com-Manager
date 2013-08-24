@@ -12,7 +12,7 @@
 <?php echo $output; ?>
                         
 <!-- main content End -->
-            
+      
 <!-- sidebar start-->
 <?php $this->load->view('admin/slice/side_bar'); ?>	
 <!--Sidebar End-->          
@@ -21,3 +21,4 @@
 <?php $this->load->view('admin/slice/footer'); ?>	
 			
 <!--Footer End-->
+  

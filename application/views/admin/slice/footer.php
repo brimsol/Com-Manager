@@ -1,6 +1,11 @@
 			<?php foreach($js_files as $file):?>
 			<script src="<?php echo $file; ?>"></script>
 			<?php endforeach; ?>
+			    <?php
+if(isset($dropdown_setup)) {
+	$this->load->view('admin/dependent_dropdown', $dropdown_setup);
+}
+?> 
 			<!-- smart resize event -->
 			<script src="<?php echo base_url(JS_ADMIN_DIR);?>/jquery.debouncedresize.min.js"></script>
 			<!-- hidden elements width/height -->
@@ -42,11 +47,12 @@
             <script src="<?php echo base_url(LIB_ADMIN_DIR);?>/list_js/plugins/paging/list.paging.min.js"></script>
             <!-- dashboard functions -->
             <script src="<?php echo base_url(JS_ADMIN_DIR);?>/gebo_dashboard.js"></script>
-    
+   
 			<script>
 				$(document).ready(function() {
 					//* show all elements & remove preloader
 					setTimeout('$("html").removeClass("js")',1000);
+					alert('sdsd');
 				});
 			</script>
 	</body>
