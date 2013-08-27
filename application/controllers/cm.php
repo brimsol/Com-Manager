@@ -177,8 +177,8 @@ class Cm extends CI_Controller {
 		-> set_relation('sub_fellowship_id', 'sub_fellowships', 'sub_fellowship_name');
 		///$output = $crud -> render();
 		//$this -> _layout_output($output);
-		//$crud -> callback_add_field('participant_id', array($this, 'empty_subpar_dropdown_select'));
-		//$crud -> callback_edit_field('participant_id', array($this, 'empty_subpar_dropdown_select'));
+		$crud -> callback_add_field('participant_id', array($this, 'empty_subpar_dropdown_select'));
+		$crud -> callback_edit_field('participant_id', array($this, 'empty_subpar_dropdown_select'));
 		
 		$crud -> callback_add_field('sub_fellowship_id', array($this, 'empty_subaso_dropdown_select'));
 		$crud -> callback_edit_field('sub_fellowship_id', array($this, 'empty_subaso_dropdown_select'));
