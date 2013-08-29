@@ -113,7 +113,24 @@
                                 </div>
                             </div>
                         </div>
-                     
+                         <div class="accordion-group">
+                            <div class="accordion-heading <?php if(isset($menu)&&($menu=='Reports')){echo " sdb_h_active";}?>">
+                                <a href="#collapseSeven" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
+                                    <i class="icon-th"></i> Reports
+                                </a>
+                            </div>
+                            <div class="accordion-body collapse <?php if(isset($menu)&&($menu=='Reports')){echo " in";}?>" id="collapseSeven">
+                                <div class="accordion-inner">
+                                    <ul class="nav nav-list">
+                                        <li><a href="<?php echo site_url('cm/participants');?>">Paricipants List</a></li>
+                                        <li><a href="<?php echo site_url('cm/participants/add');?>">Com. Item List</a></li>
+                                        <li><a href="<?php echo site_url('cm/participants_items');?>">Result List</a></li>
+                                        <li><a href="<?php echo site_url('cm/participants_items');?>">District Level Points</a></li>
+                                                                             
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                       
                     </div>
 

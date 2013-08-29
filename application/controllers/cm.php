@@ -109,13 +109,20 @@ class Cm extends CI_Controller {
 		//$this -> grocery_crud -> set_table('items');
 		//$output = $this -> grocery_crud -> render();
 		$crud = new grocery_CRUD();
-		$crud -> set_table('fellowships') -> set_subject('Association') -> columns('fellowship_name', 'fellowship_description') -> display_as('fellowship_name', 'Association Name') -> display_as('fellowship_description', 'Association Description');
+		$crud -> set_table('fellowships') -> set_subject('Association') 
+		-> columns('fellowship_name', 'fellowship_description') -> display_as('fellowship_name', 'Association Name') -> display_as('fellowship_description', 'Association Description');
 		$crud -> fields('fellowship_name', 'fellowship_description');
 		$crud -> required_fields('fellowship_name');
 		//$crud -> set_relation('fellowship_id', 'fellowships', 'fellowship_name');
+		$crud ->callback_column('fellowship_name',array($this,'_subasso_link'));
 		$output = $crud -> render();
 		$output -> menu = 'Associations';
 		$this -> _layout_output($output);
+	}
+	
+	public function _subasso_link($value, $row)
+	{
+  		return "<a href='".site_url('admin/sub_webpages/'.$row->fellowship_id)."'>$value</a>";
 	}
 
 	public function sub_associations() {
@@ -163,11 +170,15 @@ class Cm extends CI_Controller {
 		//$this -> grocery_crud -> set_table('items');
 		//$output = $this -> grocery_crud -> render();
 		$crud = new grocery_CRUD();
-		$crud -> set_table('participants') -> set_subject('Participant') -> columns('participant_chess', 'participant_name', 'participant_association', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth') -> display_as('participant_chess', 'Chess No.') -> display_as('participant_association', 'Asso.') -> display_as('participant_name', 'Name') -> display_as('participant_church', 'Church') -> display_as('participant_dob', 'DoB') -> display_as('participant_age', 'Age') -> display_as('participant_youth', 'Youth') -> display_as('participant_district', 'District');
-		$crud -> fields('participant_chess', 'participant_name', 'participant_association', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth');
-		$crud -> set_relation('participant_district', 'districts', 'district_name') 
+		$crud -> set_table('participants') -> set_subject('Participant') -> columns('participant_chess','participant_gender', 'participant_name', 'participant_association', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth') -> display_as('participant_chess', 'Chess No.') -> display_as('participant_association', 'Asso.') -> display_as('participant_name', 'Name') -> display_as('participant_church', 'Church') -> display_as('participant_dob', 'DoB') -> display_as('participant_age', 'Age') -> display_as('participant_youth', 'Youth')-> display_as('participant_gender', 'Gender') -> display_as('participant_district', 'District');
+		$crud -> fields('participant_chess', 'participant_name','participant_gender','participant_association', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth');
+		$crud -> set_relation('participant_district', 'districts', 'district_name')
+		-> set_relation('participant_association', 'fellowships', 'fellowship_name') 
 		-> set_relation('participant_church', 'church', '{church_name}-{church_address}');
-		$crud -> required_fields('participant_name', 'participant_chess', 'participant_church', 'participant_association', 'participant_district');
+		$crud->set_rules('participant_chess','Chess','is_unique[participants.participant_chess]|required|numeric');
+		$crud -> required_fields('participant_name', 'participant_chess', 'participant_church', 'participant_association', 'participant_district', 'participant_gender');
+		$crud->field_type('participant_gender','dropdown',
+            array('M' => 'Male', 'F' => 'Female'));
 		$output = $crud -> render();
 		$output -> menu = 'Participants';
 		$this -> _layout_output($output);
@@ -204,6 +215,7 @@ public function results() {
 		//-> display_as('fellowship_id', 'Association')
 		//-> display_as('sub_fellowship_id', 'Sub Association') 
 		-> display_as('item_id', 'Item Name');
+		$crud ->callback_column($this->unique_field_name('participant_id'),array($this,'_par_details'));
 		$crud -> fields('district_id', 'participant_id',  'item_id');
 		$crud -> required_fields('district_name');
 		$crud -> set_relation('participant_id', 'participants', '{participant_chess} - {participant_name}')
@@ -213,6 +225,7 @@ public function results() {
 		//-> set_relation('sub_fellowship_id', 'sub_fellowships', 'sub_fellowship_name');
 		///$output = $crud -> render();
 		//$this -> _layout_output($output);
+		$crud->unset_read();
 		$crud -> callback_add_field('participant_id', array($this, 'empty_subpar_dropdown_select'));
 		$crud -> callback_edit_field('participant_id', array($this, 'empty_subpar_dropdown_select'));
 		
@@ -221,6 +234,7 @@ public function results() {
         
         //$crud -> callback_add_field('item_id', array($this, 'empty_item_dropdown_select'));
 		//$crud -> callback_edit_field('item_id', array($this, 'empty_item_dropdown_select'));
+		
 		
 		$output = $crud -> render();
 
@@ -240,7 +254,13 @@ public function results() {
 		$output -> menu = 'Participants';
 		$this -> _layout_output($output);
 	}
-
+ function unique_field_name($field_name) {
+	    return 's'.substr(md5($field_name),0,8); //This s is because is better for a string to begin with a letter and not with a number
+    }
+public function _par_details($value, $row)
+	{
+  		return "<a href='".site_url('cm/participants/reas/'.$row->participant_id)."'>$value</a>";
+	}
 	function empty_item_dropdown_select() {
 		//CREATE THE EMPTY SELECT STRING
 		$empty_select = '<select name="item_id" class="chosen-select" data-placeholder="Competition Item" style="width: 300px; display: none;">';
@@ -301,14 +321,14 @@ function empty_subpar_dropdown_select() {
 		//CHECK FOR A URI VALUE AND MAKE SURE ITS ON THE EDIT STATE
 		if (isset($listingID) && $state == "edit") {
 			//GET THE STORED STATE ID
-			$this -> db -> select('district_id') -> from('participants_items') -> where('participant_id', $listingID);
+			$this -> db -> select('district_id') -> from('participants_items') -> where('participants_items_id', $listingID);
 			$db = $this -> db -> get();
 			$row = $db -> row(0);
 			//var_dump($row);
 			//$item_ID = $row -> item_id;
-			$district_ID = $row -> district_id;
+			$district = $row -> district_id;
 			//GET THE STATES PER COUNTRY ID
-			$this -> db -> select('participant_id,participant_name,participant_chess') -> from('participants') -> where('participant_district', $district_ID);
+			$this -> db -> select('participant_id,participant_name,participant_chess,participant_district') -> from('participants') -> where('participant_district', $district);
 			$db = $this -> db -> get();
 			/*
 			 if($db->result() > 0){
@@ -318,7 +338,7 @@ function empty_subpar_dropdown_select() {
 			 */
 			//APPEND THE OPTION FIELDS WITH VALUES FROM THE STATES PER THE COUNTRY ID
 			foreach ($db->result() as $row) :
-				if ($row -> district_id == $district_ID) {
+				if ($row -> participant_district == $district) {
 					$empty_select .= '<option value="' . $row -> participant_id . '" selected="selected">' .$row -> participant_chess.'-'. $row -> participant_name . '</option>';
 				} else {
 					$empty_select .= '<option value="' . $row -> participant_id . '">' .$row -> participant_chess.'-'. $row -> participant_name . '</option>';
