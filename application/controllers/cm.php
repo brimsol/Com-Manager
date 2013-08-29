@@ -32,7 +32,7 @@ class Cm extends CI_Controller {
 		$crud -> set_table('items') -> set_subject('Item') -> columns('item_name', 'item_code', 'fellowship_id', 'sub_fellowship_id', 'item_description') -> display_as('item_name', 'Item') -> display_as('item_description', 'Item Description') -> display_as('fellowship_id', 'Association') -> display_as('sub_fellowship_id', 'Sub Association');
 		$crud -> fields('item_name', 'item_code', 'item_description', 'fellowship_id', 'sub_fellowship_id');
 		$crud -> required_fields('item_name', 'item_code', 'fellowship_id');
-		$crud -> set_rules('item_code', 'Item Code', 'is_unique[items.items_code]|required');
+		$crud -> set_rules('item_code', 'Item Code', 'is_unique[items.item_code]|required');
 		$crud -> set_relation('fellowship_id', 'fellowships', 'fellowship_name');
 		$crud -> set_relation('sub_fellowship_id', 'sub_fellowships', 'sub_fellowship_name');
 
@@ -143,6 +143,21 @@ class Cm extends CI_Controller {
 		$output -> menu = 'Districts';
 		$this -> _layout_output($output);
 	}
+	
+	public function church() {
+		//$this -> grocery_crud -> set_table('items');
+		//$output = $this -> grocery_crud -> render();
+		$crud = new grocery_CRUD();
+		$crud -> set_table('church') -> set_subject('Church') 
+		-> columns('church_name', 'church_address') -> display_as('church_name', 'Church Name')
+		-> display_as('church_address', 'Church Place');
+		$crud -> fields('church_name', 'church_address');
+		$crud -> required_fields('church_name');
+		//$crud -> set_relation('fellowship_id', 'fellowships', 'fellowship_name');
+		$output = $crud -> render();
+		$output -> menu = 'Church';
+		$this -> _layout_output($output);
+	}
 
 	public function participants() {
 		//$this -> grocery_crud -> set_table('items');
@@ -150,10 +165,31 @@ class Cm extends CI_Controller {
 		$crud = new grocery_CRUD();
 		$crud -> set_table('participants') -> set_subject('Participant') -> columns('participant_chess', 'participant_name', 'participant_association', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth') -> display_as('participant_chess', 'Chess No.') -> display_as('participant_association', 'Asso.') -> display_as('participant_name', 'Name') -> display_as('participant_church', 'Church') -> display_as('participant_dob', 'DoB') -> display_as('participant_age', 'Age') -> display_as('participant_youth', 'Youth') -> display_as('participant_district', 'District');
 		$crud -> fields('participant_chess', 'participant_name', 'participant_association', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth');
-		$crud -> set_relation('participant_district', 'districts', 'district_name') -> set_relation('participant_association', 'fellowships', 'fellowship_name');
+		$crud -> set_relation('participant_district', 'districts', 'district_name') 
+		-> set_relation('participant_church', 'church', '{church_name}-{church_address}');
 		$crud -> required_fields('participant_name', 'participant_chess', 'participant_church', 'participant_association', 'participant_district');
 		$output = $crud -> render();
 		$output -> menu = 'Participants';
+		$this -> _layout_output($output);
+	}
+public function results() {
+		//$this -> grocery_crud -> set_table('items');
+		//$output = $this -> grocery_crud -> render();
+		$crud = new grocery_CRUD();
+		$crud -> set_table('results') -> set_subject('Participant') 
+		-> columns('item_id', 'first_place', 'second_place', 'third_place') 
+		-> display_as('item_id', 'Com. Item') 
+		-> display_as('first_place', 'First Place') 
+		-> display_as('second_place', 'Second Place') 
+		-> display_as('third_place', 'Third Place'); 
+		$crud -> fields('item_id', 'first_place', 'second_place', 'third_place');
+		$crud -> set_relation('item_id', 'items', '{item_code}-{item_name}') 
+		-> set_relation('first_place', 'participants', '{participant_chess}-{participant_name}')
+		-> set_relation('second_place', 'participants', '{participant_chess}-{participant_name}')
+		-> set_relation('third_place', 'participants', '{participant_chess}-{participant_name}');
+		$crud -> required_fields('item_id');
+		$output = $crud -> render();
+		$output -> menu = 'Results';
 		$this -> _layout_output($output);
 	}
 
@@ -162,29 +198,29 @@ class Cm extends CI_Controller {
 		//$output = $this -> grocery_crud -> render();
 		$crud = new grocery_CRUD();
 		$crud -> set_table('participants_items') -> set_subject('participants for Each Item') 
-		-> columns('participant_id', 'item_id', 'fellowship_id', 'sub_fellowship_id','district_id') 
+		-> columns('participant_id', 'item_id', 'district_id') 
 		-> display_as('district_id', 'District') 
 		-> display_as('participant_id', 'Name & Chess') 
-		-> display_as('fellowship_id', 'Association')
-		-> display_as('sub_fellowship_id', 'Sub Association') 
+		//-> display_as('fellowship_id', 'Association')
+		//-> display_as('sub_fellowship_id', 'Sub Association') 
 		-> display_as('item_id', 'Item Name');
-		$crud -> fields('district_id', 'participant_id', 'fellowship_id', 'sub_fellowship_id', 'item_id');
+		$crud -> fields('district_id', 'participant_id',  'item_id');
 		$crud -> required_fields('district_name');
 		$crud -> set_relation('participant_id', 'participants', '{participant_chess} - {participant_name}')
 		-> set_relation('district_id', 'districts', 'district_name')
-		-> set_relation('fellowship_id', 'fellowships', 'fellowship_name')
-		-> set_relation('item_id', 'items', 'item_name')
-		-> set_relation('sub_fellowship_id', 'sub_fellowships', 'sub_fellowship_name');
+		//-> set_relation('fellowship_id', 'fellowships', 'fellowship_name')
+		-> set_relation('item_id', 'items', '{item_code}-{item_name}');
+		//-> set_relation('sub_fellowship_id', 'sub_fellowships', 'sub_fellowship_name');
 		///$output = $crud -> render();
 		//$this -> _layout_output($output);
 		$crud -> callback_add_field('participant_id', array($this, 'empty_subpar_dropdown_select'));
 		$crud -> callback_edit_field('participant_id', array($this, 'empty_subpar_dropdown_select'));
 		
-		$crud -> callback_add_field('sub_fellowship_id', array($this, 'empty_subaso_dropdown_select'));
-		$crud -> callback_edit_field('sub_fellowship_id', array($this, 'empty_subaso_dropdown_select'));
+		//$crud -> callback_add_field('sub_fellowship_id', array($this, 'empty_subaso_dropdown_select'));
+		//$crud -> callback_edit_field('sub_fellowship_id', array($this, 'empty_subaso_dropdown_select'));
         
-        $crud -> callback_add_field('item_id', array($this, 'empty_item_dropdown_select'));
-		$crud -> callback_edit_field('item_id', array($this, 'empty_item_dropdown_select'));
+        //$crud -> callback_add_field('item_id', array($this, 'empty_item_dropdown_select'));
+		//$crud -> callback_edit_field('item_id', array($this, 'empty_item_dropdown_select'));
 		
 		$output = $crud -> render();
 
@@ -194,10 +230,10 @@ class Cm extends CI_Controller {
 		//SETUP YOUR DROPDOWNS
 		//Parent field item always listed first in array, in this case countryID
 		//Child field items need to follow in order, e.g stateID then cityID
-		'dd_dropdowns' => array('district_id','participant_id','fellowship_id', 'sub_fellowship_id' ,'item_id'),
+		'dd_dropdowns' => array('district_id','participant_id'),
 		//SETUP URL POST FOR EACH CHILD
 		//List in order as per above
-		'dd_url' => array('',site_url() . 'cm/sub_part/',site_url() . 'cm/all_asso/', site_url() . 'cm/sub_asso/',site_url().'cm/sub_items/'),
+		'dd_url' => array('',site_url() . 'cm/sub_part/'),
 		//LOADER THAT GETS DISPLAYED NEXT TO THE PARENT DROPDOWN WHILE THE CHILD LOADS
 		'dd_ajax_loader' => base_url('assets/admin/img') . '/' . 'ajax-loader.gif');
 		$output -> dropdown_setup = $dd_data;
@@ -325,55 +361,54 @@ function empty_subpar_dropdown_select() {
 		
         $array = array();
 		foreach ($db->result() as $row) :
-			$array[] = array("value" => $row -> participant_id, "property" => $row -> participant_name);
+			$array[] = array("value" => $row -> participant_id, "property" => $row -> participant_chess.'-'.$row -> participant_name);
 		endforeach;
 		echo json_encode($array);
 		exit ;
 	}
+	/*
 	function all_asso() {
-		$participant_id = $this -> uri -> segment(3);
-
-		$this -> db -> select("*") -> from('fellowships');
-		$db = $this -> db -> get();
-		
-        $array = array();
-		foreach ($db->result() as $row) :
-			$array[] = array("value" => $row -> fellowship_id, "property" => $row -> fellowship_name);
-		endforeach;
-		echo json_encode($array);
-		exit ;
-	}
+			$participant_id = $this -> uri -> segment(3);
 	
+			$this -> db -> select("*") -> from('fellowships');
+			$db = $this -> db -> get();
+						  $array = array();
+			foreach ($db->result() as $row) :
+				$array[] = array("value" => $row -> fellowship_id, "property" => $row -> fellowship_name);
+			endforeach;
+			echo json_encode($array);
+			exit ;
+		}*/
+	
+	
+	/*
 	function sub_items() {
-		$item_id = $this -> uri -> segment(3);
-		
-		
-        $val_check= substr($item_id, 0,2);
-		if($val_check != "no"){
-			$this -> db -> select("*") -> from('items') -> where('sub_fellowship_id', $item_id);
-			$db = $this -> db -> get();
-        
-			$array = array();
-			foreach ($db->result() as $row) :
-				$array[] = array("value" => $row -> item_id, "property" => $row -> item_name);
-			endforeach;
-			
-		}else{
-			
-			$val= substr($item_id, 2);
-			
-			$this -> db -> select("*") -> from('items') -> where('fellowship_id', $val);
-			$db = $this -> db -> get();
-        
-			$array = array();
-			foreach ($db->result() as $row) :
-				$array[] = array("value" => $row -> item_id, "property" => $row -> item_name);
-			endforeach;
-			
-		}
-		echo json_encode($array);
-		exit ;
-	}
+			$item_id = $this -> uri -> segment(3);
+										$val_check= substr($item_id, 0,2);
+			if($val_check != "no"){
+				$this -> db -> select("*") -> from('items') -> where('sub_fellowship_id', $item_id);
+				$db = $this -> db -> get();
+							  $array = array();
+				foreach ($db->result() as $row) :
+					$array[] = array("value" => $row -> item_id, "property" => $row -> item_name);
+				endforeach;
+				
+			}else{
+				
+				$val= substr($item_id, 2);
+				
+				$this -> db -> select("*") -> from('items') -> where('fellowship_id', $val);
+				$db = $this -> db -> get();
+							  $array = array();
+				foreach ($db->result() as $row) :
+					$array[] = array("value" => $row -> item_id, "property" => $row -> item_name);
+				endforeach;
+				
+			}
+			echo json_encode($array);
+			exit ;
+		}*/
+	
 
 	function _layout_output($output = null) {
 		$this -> load -> view('admin/insert_item_view', $output);

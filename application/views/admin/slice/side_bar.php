@@ -46,6 +46,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="accordion-group">
+                            <div class="accordion-heading <?php if(isset($menu)&&($menu=='Church')){echo " sdb_h_active";}?>">
+                                <a href="#collapseFive" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
+                                    <i class="icon-th"></i> Church 
+                                </a>
+                            </div>
+                            <div class="accordion-body collapse <?php if(isset($menu)&&($menu=='Church')){echo " in";}?>" id="collapseFive">
+                                <div class="accordion-inner">
+                                    <ul class="nav nav-list">
+                                        <li><a href="<?php echo site_url('cm/church');?>">Church</a></li>
+                                        <li><a href="<?php echo site_url('cm/church/add');?>">Add Church</a></li>
+                                      
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 						<div class="accordion-group">
                             <div class="accordion-heading <?php if(isset($menu)&&($menu=='Competitions')){echo " sdb_h_active";}?>">
                                 <a href="#collapseThree" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
@@ -73,12 +89,30 @@
                                     <ul class="nav nav-list">
                                         <li><a href="<?php echo site_url('cm/participants');?>">Participants</a></li>
                                         <li><a href="<?php echo site_url('cm/participants/add');?>">Add Participants</a></li>
+                                        <li><a href="<?php echo site_url('cm/participants_items');?>">Participants & Items</a></li>
+                                        <li><a href="<?php echo site_url('cm/participants_items/add');?>">Assign Participant to Item</a></li>
                                       
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                       
+                        
+                       	<div class="accordion-group">
+                            <div class="accordion-heading <?php if(isset($menu)&&($menu=='Results')){echo " sdb_h_active";}?>">
+                                <a href="#collapseSix" data-parent="#side_accordion" data-toggle="collapse" class="accordion-toggle">
+                                    <i class="icon-th"></i> Results 
+                                </a>
+                            </div>
+                            <div class="accordion-body collapse <?php if(isset($menu)&&($menu=='Results')){echo " in";}?>" id="collapseSix">
+                                <div class="accordion-inner">
+                                    <ul class="nav nav-list">
+                                        <li><a href="<?php echo site_url('cm/results');?>">Results</a></li>
+                                        <li><a href="<?php echo site_url('cm/result/add');?>">Add Result</a></li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                      
                       
                     </div>
