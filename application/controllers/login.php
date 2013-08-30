@@ -31,7 +31,7 @@ class Login extends CI_Controller {
     function index() {
 
         if ($this->session->userdata('username') != '') {
-            redirect(site_url('cm/items'));
+            redirect(site_url('cmv'));
         }
 
         $this->form_validation->set_rules('username', 'Username', 'trim|required');
@@ -54,7 +54,7 @@ class Login extends CI_Controller {
                 $login_info = array('username' => $query['username'], 'role' => $query['role']);
                 $this->session->set_userdata($login_info);
                 $this->login_model->update_login($query['user_id'], date('Y-m-d H:i:s', time()), $this->input->ip_address());
-                redirect('cm/items');
+                redirect('cmv');
             }
         }
     }

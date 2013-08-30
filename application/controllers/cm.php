@@ -170,15 +170,16 @@ class Cm extends CI_Controller {
 		//$this -> grocery_crud -> set_table('items');
 		//$output = $this -> grocery_crud -> render();
 		$crud = new grocery_CRUD();
-		$crud -> set_table('participants') -> set_subject('Participant') -> columns('participant_chess','participant_gender', 'participant_name', 'participant_association', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth') -> display_as('participant_chess', 'Chess No.') -> display_as('participant_association', 'Asso.') -> display_as('participant_name', 'Name') -> display_as('participant_church', 'Church') -> display_as('participant_dob', 'DoB') -> display_as('participant_age', 'Age') -> display_as('participant_youth', 'Youth')-> display_as('participant_gender', 'Gender') -> display_as('participant_district', 'District');
-		$crud -> fields('participant_chess', 'participant_name','participant_gender','participant_association', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth');
+		$crud -> set_table('participants') -> set_subject('Participant') -> columns('participant_chess','participant_gender', 'participant_name', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth') -> display_as('participant_chess', 'Chess No.') -> display_as('participant_association', 'Asso.') -> display_as('participant_name', 'Name') -> display_as('participant_church', 'Church') -> display_as('participant_dob', 'DoB') -> display_as('participant_age', 'Age') -> display_as('participant_youth', 'Youth')-> display_as('participant_gender', 'Gender') -> display_as('participant_district', 'District');
+		$crud -> fields('participant_chess', 'participant_name','participant_gender', 'participant_church', 'participant_district', 'participant_dob', 'participant_age', 'participant_youth');
 		$crud -> set_relation('participant_district', 'districts', 'district_name')
-		-> set_relation('participant_association', 'fellowships', 'fellowship_name') 
-		-> set_relation('participant_church', 'church', '{church_name}-{church_address}');
+		-> set_relation('participant_association', 'fellowships', 'fellowship_name'); 
 		$crud->set_rules('participant_chess','Chess','is_unique[participants.participant_chess]|required|numeric');
-		$crud -> required_fields('participant_name', 'participant_chess', 'participant_church', 'participant_association', 'participant_district', 'participant_gender');
+		$crud -> required_fields('participant_name', 'participant_chess', 'participant_church', 'participant_district', 'participant_gender');
 		$crud->field_type('participant_gender','dropdown',
             array('M' => 'Male', 'F' => 'Female'));
+		$crud ->callback_column('participant_age',array($this,'_age_zero'));
+		$crud->unset_read();
 		$output = $crud -> render();
 		$output -> menu = 'Participants';
 		$this -> _layout_output($output);
@@ -199,6 +200,7 @@ public function results() {
 		-> set_relation('second_place', 'participants', '{participant_chess}-{participant_name}')
 		-> set_relation('third_place', 'participants', '{participant_chess}-{participant_name}');
 		$crud -> required_fields('item_id');
+		$crud->unset_read();
 		$output = $crud -> render();
 		$output -> menu = 'Results';
 		$this -> _layout_output($output);
@@ -261,6 +263,17 @@ public function _par_details($value, $row)
 	{
   		return "<a href='".site_url('cm/participants/reas/'.$row->participant_id)."'>$value</a>";
 	}
+
+public function _age_zero($value, $row)
+	{
+  		if($value == '' || $value == 0)	{
+  			return "";
+  		}else{
+  			
+			return $value;
+  		}
+	}
+	
 	function empty_item_dropdown_select() {
 		//CREATE THE EMPTY SELECT STRING
 		$empty_select = '<select name="item_id" class="chosen-select" data-placeholder="Competition Item" style="width: 300px; display: none;">';

@@ -8,9 +8,7 @@
             <div class="antiscroll-content">
 
                 <div class="sidebar_inner">
-                    <form action="index.php?uid=1&amp;page=search_page" class="input-append" method="post" >
-                        <input autocomplete="off" name="query" class="search_query input-medium" size="16" type="text" placeholder="Search..." /><button type="submit" class="btn"><i class="icon-search"></i></button>
-                    </form>
+                   <div>&nbsp;</div>
                     <div id="side_accordion" class="accordion">
 
                         <div class="accordion-group">

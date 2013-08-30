@@ -9,9 +9,11 @@
         <!-- Bootstrap framework -->
             <link rel="stylesheet" href="<?php echo base_url(STYLE_ADMIN_DIR);?>/bootstrap.min.css" />
             <link rel="stylesheet" href="<?php echo base_url(STYLE_ADMIN_DIR);?>/bootstrap-responsive.min.css" />
+            <?php if(isset($css_files)){?>
             <?php foreach($css_files as $file):?>
 			<link type="text/css" rel="stylesheet" href="<?php echo $file; ?>" />
 			<?php endforeach; ?>
+			<?php } ?>
         <!-- gebo blue theme-->
             <link rel="stylesheet" href="<?php echo base_url(STYLE_ADMIN_DIR);?>/blue.css" id="link_theme" />
         <!-- breadcrumbs-->
